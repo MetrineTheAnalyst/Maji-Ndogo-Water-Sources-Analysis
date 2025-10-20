@@ -5,36 +5,40 @@ The purpose of this project is to gather insights about water sources in Maji Nd
 The analysis answers practical questions about source distribution, population served, contamination, and suggested improvements. 
 SQL scripts join tables (location, visits, water_source, well_pollution), aggregate results, build pivot tables, and populate a Project_progress table for field work tracking.
 
-REPOSITORY CONTENT
-01-setup-use-db.sql        
-02-combined-view.sql       
-03-province-pivot.sql      
-04-town-pivot.sql          
-05-project-progress.sql    
-99-queries-sample.sql      
+## Database Used
+**Database:** `md_water_services`  
 
-KEY SQL FILES DESCRIBED
-02-combined-view.sql
-Joins location, visits, water_source, and optionally well_pollution selecting only first visits (visit_count = 1) and creates the view combined_analysis_table.
+**Core Tables:**
+- `location`
+- `visits`
+- `water_source`
+- `well_pollution`
 
-03-province-pivot.sql
-Builds a province-level pivot using a CTE province_totals and calculates the percent of people served by each water source type per province.
+**Created Objects:**
+- `combined_analysis_table` *(VIEW)*
+- `town_aggregated_water_access` *(TEMP TABLE)*
+- `Project_progress` *(TABLE)*
 
-04-town-pivot.sql
-Aggregates at town level (province + town composite key) and stores results in a temporary table town_aggregated_water_access, then computes Pct_broken_taps.
+## ⚙️ How to Run
 
-05-project-progress.sql
-Creates Project_progress table and inserts rows based on conditional logic (contamination -> filters, rivers -> drill wells, long queues -> add taps, etc).
+1. Open **MySQL Workbench** or your preferred SQL IDE.  
+2. Make sure the `md_water_services` database is available.  
+3. Run the scripts in the following order:
 
-99-queries-sample.sql
-Useful SELECT statements (LIMIT 10 / ORDER BY) to validate the insertion and sampling.
+   | Step | File | Description |
+   |------|------|-------------|
+   | 1 | [`sql/01-setup-use-db.sql`](sql/01-setup-use-db.sql) | Select the working database. |
+   | 2 | [`sql/02-combined-view.sql`](sql/02-combined-view.sql) | Build the combined view joining all core tables. |
+   | 3 | [`sql/03-province-pivot.sql`](sql/03-province-pivot.sql) | Create a pivot showing % of people served by source type per province. |
+   | 4 | [`sql/04-town-pivot.sql`](sql/04-town-pivot.sql) | Create a similar pivot at the town level. |
+   | 5 | [`sql/05-project-progress.sql`](sql/05-project-progress.sql) | Generate a table for project tracking and improvement recommendations. |
 
 
-SHORT SUMMARY OF INSIGHTS:
-- Sokoto has the largest share of people relying on river water.
-- Amanzi shows majority tap-based supply
-- Several towns show a high percentage of tap_in_home_broken.
-- Project_progress table stores actionable improvements and status for engineers/field teams
+##  Key Insights
+- **Sokoto Province**: Highest reliance on river water 
+- **Amanzi Province**: Most residents depend on taps 
+- Town-level pivots reveal which localities face long queues or contaminated wells.  
+- The **Project_progress** table formalizes a plan to address infrastructure issues efficiently.  
 
 IMPROVEMENTS TO BE IMPLEMENTED:
 1. Where there are rivers → Drill wells
@@ -43,4 +47,10 @@ IMPROVEMENTS TO BE IMPLEMENTED:
 4. If the source is shared tap and the queue is longer than 30 min (30 min and above) → Install X taps nearby where X number of taps is calculated using X
 = FLOOR(time_in_queue / 30).
 5. If the source is tap_in_home_broken → Diagnose local infrastructure
+
+AUTHOR
+Metrine Bwisa
+SQL & Data Analytics Enthusiast
+🔗 Check out my [LinkedIn profile](https://www.linkedin.com/in/yourusername/](https://www.linkedin.com/in/metrine-bwisa-883123376/)).
+    [Project Portfolio](datascienceportfol.io/metrinebwisa4)
 
